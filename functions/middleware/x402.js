@@ -56,7 +56,11 @@ function authMiddleware(req, res, next) {
  * Helper to validate API keys
  */
 async function validateApiKey(apiKey) {
-    const masterKey = process.env.MASTER_API_KEY || 'agtrust_dev_2026';
+    const masterKey = process.env.MASTER_API_KEY;
+    if (!masterKey) {
+        console.error('[CRITICAL] MASTER_API_KEY environment variable is not set!');
+        return null;
+    }
     if (apiKey === masterKey) return { owner: 'master' };
 
     const keyDoc = await db.collection('apiKeys').doc(apiKey).get();
