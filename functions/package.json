@@ -1,0 +1,22 @@
+{
+    "name": "agent-trust-score",
+    "version": "1.0.0",
+    "description": "AgentTrust - Credit Bureau & Reputation Scoring for AI Agents",
+    "private": true,
+    "engines": {
+        "node": "20"
+    },
+    "main": "index.js",
+    "dependencies": {
+        "cors": "^2.8.5",
+        "express": "^4.18.2",
+        "firebase-admin": "^11.11.1",
+        "firebase-functions": "^4.5.0",
+        "node-fetch": "^2.7.0",
+        "x402-express": "^1.1.0"
+    },
+    "scripts": {
+        "serve": "firebase emulators:start --only functions",
+        "deploy": "firebase deploy --only functions"
+    }
+}

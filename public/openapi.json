@@ -1,0 +1,82 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "AgentTrust API",
+        "description": "Credit bureau and reputation scoring for AI agents on Base network.",
+        "version": "1.0.0"
+    },
+    "servers": [
+        {
+            "url": "https://agent-trust-score.web.app/api"
+        }
+    ],
+    "paths": {
+        "/score/{address}": {
+            "get": {
+                "summary": "Get wallet trust score",
+                "description": "Returns a trust score from 0-100 and a letter grade based on on-chain activity.",
+                "parameters": [
+                    {
+                        "name": "address",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "pattern": "^0x[a-fA-F0-9]{40}$"
+                        },
+                        "description": "The Ethereum/Base wallet address to score"
+                    },
+                    {
+                        "name": "full",
+                        "in": "query",
+                        "schema": {
+                            "type": "boolean"
+                        },
+                        "description": "Include detailed factor breakdown"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful trust score response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "score": {
+                                            "type": "number"
+                                        },
+                                        "grade": {
+                                            "type": "string"
+                                        },
+                                        "label": {
+                                            "type": "string"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "402": {
+                        "description": "Payment Required (x402 Protocol)",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "payTo": {
+                                            "type": "string"
+                                        },
+                                        "amount": {
+                                            "type": "string"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

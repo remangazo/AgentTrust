@@ -1,0 +1,18 @@
+{
+    "schema_version": "v1",
+    "name_for_model": "AgentTrust",
+    "name_for_human": "AgentTrust Score",
+    "description_for_model": "API to check the trust score and reputation of any Ethereum or Base network wallet address. Returns a score from 0 to 100, letter grades (AAA-C), and a breakdown of 5 critical on-chain factors (Age, Volume, Success Rate, Diversity, Consistency). Useful for agents to assess counterparty risk before transacting.",
+    "description_for_human": "Verify wallet reputation and trust scores for agents on Base network.",
+    "auth": {
+        "type": "none"
+    },
+    "api": {
+        "type": "openapi",
+        "url": "https://agent-trust-score.web.app/api/docs",
+        "is_user_authenticated": false
+    },
+    "logo_url": "https://agent-trust-score.web.app/logo.png",
+    "contact_email": "support@agent-trust.com",
+    "legal_info_url": "https://agent-trust-score.web.app/terms"
+}

@@ -1,0 +1,23 @@
+# Dependencies
+node_modules/
+dist/
+build/
+
+# Firebase
+.firebase/
+firestore-debug.log
+firebase-debug.log
+ui-debug.log
+
+# IDEs and OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# Secrets
+.env
+.env.*
+*.local
+credentials.json
+service-account.json

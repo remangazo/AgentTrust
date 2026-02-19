@@ -1,0 +1,95 @@
+import { Action, IAgentRuntime, Memory, State, HandlerCallback } from "@elizaos/core";
+
+export const getScoreAction: Action = {
+    name: "GET_AGENT_TRUST_SCORE",
+    similes: [
+        "CHECK_REPUTATION",
+        "GET_TRUST_GRADE",
+        "WAlLET_AUDIT",
+        "CHECK_WALLET_SCORE"
+    ],
+    description: "Queries the AgentTrust API to get the reputation score and grade of a specific wallet address on the Base network.",
+    validate: async (runtime: IAgentRuntime, message: Memory) => {
+        // Basic validation: look for a 0x address in the text
+        return /0x[a-fA-F0-9]{40}/.test(message.content.text);
+    },
+    handler: async (
+        runtime: IAgentRuntime,
+        message: Memory,
+        state: State,
+        _options: { [key: string]: unknown },
+        callback: HandlerCallback
+    ) => {
+        const addressMatch = message.content.text.match(/0x[a-fA-F0-9]{40}/);
+        if (!addressMatch) {
+            callback({ text: "I couldn't find a valid wallet address to check." });
+            return false;
+        }
+
+        const address = addressMatch[0];
+        const baseUrl = 'https://agent-trust-score.web.app/api';
+        const url = `${baseUrl}/score/${address}?full=true`;
+
+        try {
+            let response = await fetch(url);
+
+            // Handle x402 Payment Required
+            if (response.status === 402) {
+                const paymentReq = await response.json();
+                const paymentInfo = paymentReq.accepts[0];
+
+                console.log(`[AgentTrust] Payment Required: ${paymentInfo.maxAmountRequired} micro-USDC.`);
+
+                // Attempt automated payment via Eliza's wallet provider
+                // Note: Implementation depends on the specific WalletProvider configured in Eliza
+                const walletProvider = runtime.getProvider("wallet");
+                if (walletProvider && typeof walletProvider.transfer === 'function') {
+                    console.log(`[AgentTrust] Executing automated x402 payment...`);
+                    const tx = await walletProvider.transfer({
+                        to: paymentInfo.payTo,
+                        amount: paymentInfo.maxAmountRequired,
+                        token: "USDC"
+                    });
+
+                    // Retry with payment proof
+                    response = await fetch(url, {
+                        headers: { 'x-transaction-hash': tx.hash }
+                    });
+                } else {
+                    callback({ text: "This check requires a small payment ($0.01 USDC), but I don't have a wallet configured to pay automatically." });
+                    return false;
+                }
+            }
+
+            if (!response.ok) {
+                callback({ text: `I had trouble reaching the AgentTrust service. (${response.statusText})` });
+                return false;
+            }
+
+            const data = await response.json();
+
+            const responseText = `🛡️ AgentTrust Report for ${address.slice(0, 6)}...${address.slice(-4)}:
+Score: ${data.score}/100
+Grade: ${data.grade} (${data.label})
+Summary: ${data.factors?.age?.detail || 'No detailed data'}. 
+Conclusion: ${data.score > 60 ? 'This wallet appears reliable.' : 'Caution is advised with this counterparty.'}`;
+
+            callback({
+                text: responseText,
+                content: { success: true, ...data }
+            });
+
+            return true;
+        } catch (error) {
+            console.error("AgentTrust Plugin Error:", error);
+            callback({ text: "An error occurred while auditing the wallet." });
+            return false;
+        }
+    },
+    examples: [
+        [
+            { user: "{{user1}}", content: { text: "What is the reputation of 0xDA1bA8aEf8308c23b3E9bD27c6dDba5ca322DcB7?" } },
+            { user: "{{agentName}}", content: { text: "Checking AgentTrust records... 🛡️ Done! The wallet has a Grade A (Reliable).", action: "GET_AGENT_TRUST_SCORE" } }
+        ]
+    ]
+};
