@@ -59,7 +59,7 @@ router.get(['/docs', '/api/docs'], (req, res) => {
                 basic_score: '$0.01 USDC (10,000 micro-USDC)',
                 full_report: '$0.05 USDC (50,000 micro-USDC)'
             },
-            payment_address: '0xDA1bA8aEf8308c23b3E9bD27c6dDba5ca322DcB7',
+            payment_address: '0x9eD986438138110AeC1388311b0944A435feDA70',
             network: 'Base (L2)'
         },
         endpoints: [

@@ -32,7 +32,7 @@ We provide official adapters for the most popular agent frameworks:
 ## 💰 Automated Payments (x402)
 AgentTrust uses the x402 protocol via the `x402-express` middleware. When an agent receives a 402 status, it should:
 1. Parse the `accepts` field in the JSON response.
-2. Send the required micro-USDC amount to the indicated wallet on Base.
+2. Send the required micro-USDC amount to `0x9eD986438138110AeC1388311b0944A435feDA70` on Base.
 3. Retry the request with the `x-transaction-hash` header.
 
 **Pricing:**

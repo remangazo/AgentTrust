@@ -3,7 +3,7 @@ const db = admin.firestore();
 const { paymentMiddleware } = require('x402-express');
 
 // Recipient wallet (Base Network)
-const RECIPIENT_WALLET = '0xDA1bA8aEf8308c23b3E9bD27c6dDba5ca322DcB7'; // agenttrustwallet.base.eth
+const RECIPIENT_WALLET = '0x9eD986438138110AeC1388311b0944A435feDA70';
 
 /**
  * x402 Middleware configuration

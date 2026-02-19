@@ -41,6 +41,7 @@ export const getScoreAction: Action = {
                 console.log(`[AgentTrust] Payment Required: ${paymentInfo.maxAmountRequired} micro-USDC.`);
 
                 // Attempt automated payment via Eliza's wallet provider
+                // Note: Implementation depends on the specific WalletProvider configured in Eliza
                 const walletProvider = runtime.getProvider("wallet");
                 if (walletProvider && typeof walletProvider.transfer === 'function') {
                     console.log(`[AgentTrust] Executing automated x402 payment...`);
